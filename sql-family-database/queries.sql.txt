@@ -1,0 +1,43 @@
+SELECT 
+    dziadek.id_osoby,
+    dziadek.imie,
+    dziadek.nazwisko,
+    COUNT(wnuczka.id_osoby) AS liczba_wnuczek
+FROM Osoba AS dziadek
+JOIN Osoba AS dziecko 
+    ON dziecko.matka_id = dziadek.id_osoby OR dziecko.ojciec_id = dziadek.id_osoby
+JOIN Osoba AS wnuczka 
+    ON wnuczka.matka_id = dziecko.id_osoby OR wnuczka.ojciec_id = dziecko.id_osoby
+WHERE wnuczka.plec = 'K'
+GROUP BY dziadek.id_osoby, dziadek.imie, dziadek.nazwisko
+ORDER BY liczba_wnuczek DESC;
+
+SELECT 
+    typ_umowy,
+    COUNT(DISTINCT id_osoby) AS liczba_pracownikow,
+    ROUND(AVG(pensja), 2) AS srednia_pensja
+FROM Zatrudnienie
+GROUP BY typ_umowy;
+
+
+WITH Najbiedniejsza AS (
+    SELECT TOP 1 * 
+    FROM Osoba 
+    WHERE zarobki > 0
+    ORDER BY zarobki ASC
+),
+Rodzice AS (
+    SELECT * FROM Osoba
+    WHERE id_osoby = (SELECT matka_id FROM Najbiedniejsza)
+       OR id_osoby = (SELECT ojciec_id FROM Najbiedniejsza)
+),
+Dzieci AS (
+    SELECT * FROM Osoba
+    WHERE matka_id = (SELECT id_osoby FROM Najbiedniejsza)
+       OR ojciec_id = (SELECT id_osoby FROM Najbiedniejsza)
+)
+SELECT 'rodzic' AS relacja, imie, nazwisko FROM Rodzice
+UNION ALL
+SELECT 'osoba' AS relacja, imie, nazwisko FROM Najbiedniejsza
+UNION ALL
+SELECT 'dziecko' AS relacja, imie, nazwisko FROM Dzieci;

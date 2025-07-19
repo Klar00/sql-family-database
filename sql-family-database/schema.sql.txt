@@ -1,0 +1,60 @@
+CREATE TABLE Osoba (
+    id_osoby INT PRIMARY KEY,
+    imie NVARCHAR(50),
+    nazwisko NVARCHAR(50),
+    data_urodzenia DATE,
+    plec CHAR(1) CHECK (plec IN ('M', 'K')),
+    zarobki DECIMAL(10, 2),
+    matka_id INT NULL,
+    ojciec_id INT NULL,
+    maz_zona_id INT NULL,
+    FOREIGN KEY (matka_id) REFERENCES Osoba(id_osoby),
+    FOREIGN KEY (ojciec_id) REFERENCES Osoba(id_osoby),
+    FOREIGN KEY (maz_zona_id) REFERENCES Osoba(id_osoby)
+);
+
+
+CREATE TABLE Firma (
+    id_firmy INT PRIMARY KEY,
+    nazwa NVARCHAR(100),
+    prezes_id INT NOT NULL,
+    FOREIGN KEY (prezes_id) REFERENCES Osoba(id_osoby)
+);
+
+
+CREATE TABLE Zatrudnienie (
+    id_zatrudnienia INT PRIMARY KEY,
+    id_osoby INT NOT NULL,
+    id_firmy INT NOT NULL,
+    typ_umowy NVARCHAR(10) CHECK (typ_umowy IN ('praca', 'zlecenie')),
+    pensja DECIMAL(10, 2),
+    FOREIGN KEY (id_osoby) REFERENCES Osoba(id_osoby),
+    FOREIGN KEY (id_firmy) REFERENCES Firma(id_firmy)
+);
+
+
+INSERT INTO Osoba (id_osoby, imie, nazwisko, data_urodzenia, plec, zarobki, matka_id, ojciec_id, maz_zona_id) VALUES
+(1, 'Jan', 'Kowalski', '1950-01-01', 'M', 3000.00, NULL, NULL, 2),
+(2, 'Anna', 'Kowalska', '1955-03-05', 'K', 3200.00, NULL, NULL, 1),
+(3, 'Piotr', 'Kowalski', '1980-06-10', 'M', 4500.00, 2, 1, 4),
+(4, 'Ewa', 'Kowalska', '1982-11-12', 'K', 4700.00, NULL, NULL, 3),
+(5, 'Kasia', 'Kowalska', '2005-09-01', 'K', 0.00, 4, 3, NULL),
+(6, 'Magda', 'Kowalska', '1985-07-15', 'K', 4000.00, 2, 1, 7),
+(7, 'Tomasz', 'Nowak', '1984-04-04', 'M', 4100.00, NULL, NULL, 6),
+(8, 'Natalia', 'Nowak', '2010-03-20', 'K', 0.00, 6, 7, NULL),
+(9, 'Oliwia', 'Nowak', '2012-08-14', 'K', 0.00, 6, 7, NULL),
+(10, 'Jakub', 'Nowak', '2014-10-10', 'M', 0.00, 6, 7, NULL);
+
+
+INSERT INTO Firma (id_firmy, nazwa, prezes_id) VALUES
+(1, 'TechCorp', 1),
+(2, 'BizPol', 3);
+
+
+INSERT INTO Zatrudnienie (id_zatrudnienia, id_osoby, id_firmy, typ_umowy, pensja) VALUES
+(1, 1, 1, 'praca', 3000.00),
+(2, 3, 2, 'zlecenie', 4500.00),
+(3, 4, 1, 'praca', 4700.00),
+(4, 5, 2, 'zlecenie', 500.00),
+(5, 6, 2, 'praca', 4000.00),
+(6, 7, 2, 'zlecenie', 4100.00);
