@@ -8,13 +8,13 @@ This project presents a relational database in **Microsoft SQL Server** that mod
 
 Tables
 
-- `Osoba` – persons with family links
+- `Osoba` – people with family links
 - `Firma` – companies with a CEO (one per company)
 - `Zatrudnienie` – employment relation (one person can work in many firms)
 
 Example queries
 
-- A. Find person with the most granddaughters
+- A. Find a person with the most granddaughters
 - B. Count employees and average salary per contract type
 - C. Show the 2-generation family of the lowest-earning person
 
